@@ -12,6 +12,13 @@
         <h2>Podaj swoje imię:</h2>
         <input type="text" id="player-name" placeholder="Wpisz imię">
         <button class="button" onclick="startGame()">Rozpocznij grę</button>
+        <div id="news-section">
+            <h3>Dodaj news ze świata gry:</h3>
+            <textarea id="news-content" placeholder="Wpisz treść newsa"></textarea>
+            <button class="button" onclick="addNews()">Dodaj</button>
+            <h4>Aktualności:</h4>
+            <ul id="news-list"></ul>
+        </div>
     </div>
 
     <div class="job-container" style="display: none;">
@@ -31,18 +38,8 @@
         <h3>Twoje inwestycje:</h3>
         <div id="investments-list"></div>
 
-        <button class="button" onclick="goToJobs()">Powrót do wyboru zawodów</button>
+        <button class="button" onclick="goToJobs()">Powrót do wyboru zawodu</button>
         <button class="button" onclick="goToMain()">Powrót do strony głównej</button>
-    </div>
-
-    <div class="news-container">
-        <h2>News ze świata gry</h2>
-        <ul id="news-list">
-            <!-- Wstaw tutaj newsy jako <li> -->
-            <li>Republika Nowatera wita nowych graczy!</li>
-            <li>Rolnik zarobił pierwszy milion!</li>
-            <li>Kierowca zdobył prestiżowy kontrakt!</li>
-        </ul>
     </div>
 
     <footer>
