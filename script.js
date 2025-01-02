@@ -82,6 +82,63 @@ function loadGameState() {
     }
 }
 
+// Funkcja eksportu stanu gry do pliku
+function exportGameState() {
+    const gameState = {
+        playerName,
+        currentJob: currentJob ? currentJob.name : null,
+        earnings,
+        passiveIncome,
+        purchasedInvestments,
+        jobEarnings
+    };
+
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gameState));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", "gameState.json");
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    document.body.removeChild(downloadAnchor);
+}
+
+// Funkcja importu stanu gry z pliku
+function importGameState() {
+    const fileInput = document.getElementById('importFile');
+    const file = fileInput.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const gameState = JSON.parse(e.target.result);
+
+                playerName = gameState.playerName || '';
+                currentJob = gameState.currentJob ? jobs[gameState.currentJob.toLowerCase()] : null;
+                earnings = gameState.earnings || 0;
+                passiveIncome = gameState.passiveIncome || 0;
+                purchasedInvestments = gameState.purchasedInvestments || [];
+                Object.assign(jobEarnings, gameState.jobEarnings || {});
+
+                if (currentJob) {
+                    chooseJob(currentJob.name.toLowerCase());
+                } else {
+                    document.querySelector('.start-container').style.display = 'block';
+                    document.querySelector('.job-container').style.display = 'none';
+                    document.querySelector('.game-container').style.display = 'none';
+                }
+
+                updateEarningsDisplay();
+                updateInvestmentList();
+                startPassiveIncome();
+            } catch (error) {
+                alert("Nie udało się wczytać zapisu gry. Sprawdź poprawność pliku.");
+            }
+        };
+        reader.readAsText(file);
+    }
+}
+
 // Funkcja inicjalizacji gry
 function startGame() {
     const nameInput = document.getElementById('player-name');
