@@ -31,6 +31,11 @@
         <h3>Twoje inwestycje:</h3>
         <div id="investments-list"></div>
 
+        <h3>Zarządzanie grą:</h3>
+        <button class="button" onclick="exportGameState()">Zapisz grę</button>
+        <label for="importFile" class="button" style="cursor: pointer;">Wczytaj grę</label>
+        <input type="file" id="importFile" style="display: none;" onchange="importGameState()" />
+
         <button class="button" onclick="goToJobs()">Powrót do wyboru zawodów</button>
         <button class="button" onclick="goToMain()">Powrót do strony głównej</button>
     </div>
