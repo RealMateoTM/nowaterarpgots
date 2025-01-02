@@ -66,4 +66,29 @@ footer {
 
 .investment-item {
     margin-bottom: 10px;
+    .ranking-container {
+    position: fixed;
+    top: 100px;
+    right: 10px;
+    width: 200px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
+
+.ranking-container h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+#ranking-list {
+    list-style: none;
+    padding: 0;
+}
+
+#ranking-list li {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
