@@ -39,9 +39,7 @@ let earnings = 0;
 let passiveIncome = 0;
 let passiveIncomeInterval = null;
 let purchasedInvestments = [];
-
-// Obiekt do przechowywania zarobków i inwestycji dla każdego zawodu
-const jobEarnings = {};
+const jobEarnings = {}; // Przechowywanie zarobków dla każdego zawodu
 
 // Funkcja zapisu stanu gry
 function saveGameState() {
@@ -54,7 +52,7 @@ function saveGameState() {
         jobEarnings
     };
     localStorage.setItem('gameState', JSON.stringify(gameState));
-    console.log("Stan gry zapisany:", gameState); // Diagnostyka
+    console.log("Stan gry zapisany:", gameState);
 }
 
 // Funkcja ładowania stanu gry
@@ -62,10 +60,8 @@ function loadGameState() {
     const savedState = localStorage.getItem('gameState');
     if (savedState) {
         const gameState = JSON.parse(savedState);
+        console.log("Stan gry wczytany:", gameState);
 
-        console.log("Stan gry wczytany:", gameState); // Diagnostyka
-
-        // Przywróć zapisane dane
         playerName = gameState.playerName || 'Gracz';
         currentJob = gameState.currentJob ? jobs[gameState.currentJob.toLowerCase()] : null;
         earnings = gameState.earnings || 0;
@@ -73,87 +69,97 @@ function loadGameState() {
         purchasedInvestments = gameState.purchasedInvestments || [];
         Object.assign(jobEarnings, gameState.jobEarnings);
 
-        // Przywróć interfejs i logikę
         if (currentJob) {
-            chooseJob(currentJob.name.toLowerCase());
+            chooseJob(currentJob.name.toLowerCase(), true);
         }
     } else {
-        console.log("Brak zapisanego stanu gry."); // Diagnostyka
+        console.log("Brak zapisanego stanu gry.");
     }
 }
 
-// Funkcja eksportu stanu gry do pliku
-function exportGameState() {
-    const gameState = {
-        playerName,
-        currentJob: currentJob ? currentJob.name : null,
-        earnings,
-        passiveIncome,
-        purchasedInvestments,
-        jobEarnings
-    };
+// Funkcja wyboru zawodu
+function chooseJob(jobKey, isLoading = false) {
+    if (!jobs[jobKey]) {
+        console.error("Wybrano nieprawidłowy zawód:", jobKey);
+        return;
+    }
 
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gameState));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "gameState.json");
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    document.body.removeChild(downloadAnchor);
+    if (!isLoading) saveGameState();
+
+    currentJob = jobs[jobKey];
+    document.querySelector('.job-container').style.display = 'none';
+    document.querySelector('.game-container').style.display = 'block';
+
+    document.getElementById('job-title').innerText = currentJob.name;
+    document.getElementById('job-image').src = currentJob.image;
+    document.getElementById('job-image').alt = `Obraz zawodu: ${currentJob.name}`;
+
+    updateEarningsDisplay();
+    updateInvestmentList();
+    startPassiveIncome();
 }
 
-// Funkcja importu stanu gry z pliku
-function importGameState() {
-    const fileInput = document.getElementById('importFile');
-    const file = fileInput.files[0];
+// Funkcja aktualizacji zarobków
+function updateEarningsDisplay() {
+    document.getElementById('earnings').innerText = earnings;
+}
 
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            try {
-                const gameState = JSON.parse(e.target.result);
+// Funkcja aktualizacji listy inwestycji
+function updateInvestmentList() {
+    const investmentsList = document.getElementById('investments-list');
+    investmentsList.innerHTML = '';
 
-                playerName = gameState.playerName || '';
-                currentJob = gameState.currentJob ? jobs[gameState.currentJob.toLowerCase()] : null;
-                earnings = gameState.earnings || 0;
-                passiveIncome = gameState.passiveIncome || 0;
-                purchasedInvestments = gameState.purchasedInvestments || [];
-                Object.assign(jobEarnings, gameState.jobEarnings || {});
+    currentJob.investments.forEach((investment, index) => {
+        const investmentItem = document.createElement('div');
+        investmentItem.className = 'investment-item';
+        investmentItem.innerHTML = `
+            <span>${investment.name} (Koszt: ${investment.cost} NT, Dochód: ${investment.income} NT/s)</span>
+            <button class="button" onclick="buyInvestment(${index})">Kup</button>
+        `;
+        investmentsList.appendChild(investmentItem);
+    });
+}
 
-                if (currentJob) {
-                    chooseJob(currentJob.name.toLowerCase());
-                } else {
-                    document.querySelector('.start-container').style.display = 'block';
-                    document.querySelector('.job-container').style.display = 'none';
-                    document.querySelector('.game-container').style.display = 'none';
-                }
-
-                updateEarningsDisplay();
-                updateInvestmentList();
-                startPassiveIncome();
-            } catch (error) {
-                alert("Nie udało się wczytać zapisu gry. Sprawdź poprawność pliku.");
-            }
-        };
-        reader.readAsText(file);
+// Funkcja kupowania inwestycji
+function buyInvestment(index) {
+    const investment = currentJob.investments[index];
+    if (earnings >= investment.cost) {
+        earnings -= investment.cost;
+        passiveIncome += investment.income;
+        purchasedInvestments.push(index);
+        updateEarningsDisplay();
+    } else {
+        alert("Nie masz wystarczających środków na tę inwestycję!");
     }
 }
 
-// Funkcja inicjalizacji gry
+// Funkcja zarabiania pieniędzy
+function earnMoney() {
+    earnings += currentJob.baseIncome;
+    updateEarningsDisplay();
+}
+
+// Funkcja pasywnych zarobków
+function startPassiveIncome() {
+    if (passiveIncomeInterval) clearInterval(passiveIncomeInterval);
+
+    passiveIncomeInterval = setInterval(() => {
+        earnings += passiveIncome;
+        updateEarningsDisplay();
+    }, 1000);
+}
+
+// Funkcja rozpoczęcia gry
 function startGame() {
-    const nameInput = document.getElementById('player-name');
-    playerName = nameInput ? nameInput.value || 'Gracz' : playerName;
+    playerName = document.getElementById('player-name').value || 'Gracz';
     document.querySelector('.start-container').style.display = 'none';
     document.querySelector('.job-container').style.display = 'block';
-    toggleNewsDisplay(false); // Ukryj newsy na innych stronach
-    saveGameState(); // Zapis po rozpoczęciu gry
 }
 
-// Zapis stanu gry przed opuszczeniem strony
+// Zapis stanu gry przed zamknięciem strony
 window.addEventListener('beforeunload', saveGameState);
 
-// Wywołaj ładowanie stanu gry po załadowaniu strony
+// Inicjalizacja po załadowaniu strony
 document.addEventListener('DOMContentLoaded', () => {
     loadGameState();
-    toggleNewsDisplay(true); // Wyświetl newsy na stronie głównej
 });
