@@ -54,6 +54,7 @@ function saveGameState() {
         jobEarnings
     };
     localStorage.setItem('gameState', JSON.stringify(gameState));
+    console.log("Stan gry zapisany:", gameState); // Diagnostyka
 }
 
 // Funkcja ładowania stanu gry
@@ -61,6 +62,8 @@ function loadGameState() {
     const savedState = localStorage.getItem('gameState');
     if (savedState) {
         const gameState = JSON.parse(savedState);
+
+        console.log("Stan gry wczytany:", gameState); // Diagnostyka
 
         // Przywróć zapisane dane
         playerName = gameState.playerName || 'Gracz';
@@ -74,6 +77,8 @@ function loadGameState() {
         if (currentJob) {
             chooseJob(currentJob.name.toLowerCase());
         }
+    } else {
+        console.log("Brak zapisanego stanu gry."); // Diagnostyka
     }
 }
 
@@ -84,6 +89,7 @@ function startGame() {
     document.querySelector('.start-container').style.display = 'none';
     document.querySelector('.job-container').style.display = 'block';
     toggleNewsDisplay(false); // Ukryj newsy na innych stronach
+    saveGameState(); // Zapis po rozpoczęciu gry
 }
 
 // Zapis stanu gry przed opuszczeniem strony
