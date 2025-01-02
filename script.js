@@ -71,6 +71,26 @@ function loadGameData() {
     }
     return false;
 }
+function generateFakeRanking() {
+    const rankingList = document.getElementById('ranking-list');
+    rankingList.innerHTML = ''; // Wyczyszczenie listy
+
+    const fakeRanking = Array.from({ length: 5 }, () => {
+        const name = fakePlayerNames[Math.floor(Math.random() * fakePlayerNames.length)];
+        const job = fakeJobs[Math.floor(Math.random() * fakeJobs.length)];
+        const earnings = Math.floor(Math.random() * 2000 + 500); // Losowy dochód od 500 do 2500 NT
+
+        return { name, job, earnings };
+    });
+
+    fakeRanking.sort((a, b) => b.earnings - a.earnings); // Posortowanie po zarobkach
+
+    fakeRanking.forEach(player => {
+        const listItem = document.createElement('li');
+        listItem.innerText = `${player.name} - ${player.job} = ${player.earnings} NT`;
+        rankingList.appendChild(listItem);
+    });
+}
 
 function startGame() {
     playerName = document.getElementById('player-name').value || 'Gracz';
@@ -155,6 +175,11 @@ function startPassiveIncome() {
         updateEarningsDisplay();
         saveGameData();
     }, 1000);
+
+    setInterval(() => {
+    generateFakeRanking();
+}, 120000); // Aktualizacja co 2 minuty
+
 }
 
 function goToJobs() {
@@ -177,4 +202,11 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         toggleNewsDisplay(true);
     }
+    document.addEventListener("DOMContentLoaded", () => {
+    if (loadGameData()) {
+        goToMain();
+    } else {
+        toggleNewsDisplay(true);
+    }
+    generateFakeRanking(); // Pierwsze generowanie rankingu
 });
