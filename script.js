@@ -40,11 +40,37 @@ let passiveIncome = 0;
 let passiveIncomeInterval = null;
 let purchasedInvestments = [];
 
+function saveGameData() {
+    const gameData = {
+        playerName,
+        currentJob: currentJob ? currentJob.name : null,
+        earnings,
+        passiveIncome,
+        purchasedInvestments
+    };
+    document.cookie = `gameData=${JSON.stringify(gameData)}; path=/`;
+}
+
+function loadGameData() {
+    const cookies = document.cookie.split('; ').find(row => row.startsWith('gameData='));
+    if (cookies) {
+        const gameData = JSON.parse(cookies.split('=')[1]);
+        playerName = gameData.playerName || 'Gracz';
+        currentJob = jobs[gameData.currentJob] || null;
+        earnings = gameData.earnings || 0;
+        passiveIncome = gameData.passiveIncome || 0;
+        purchasedInvestments = gameData.purchasedInvestments || [];
+        return true;
+    }
+    return false;
+}
+
 function startGame() {
     playerName = document.getElementById('player-name').value || 'Gracz';
     document.querySelector('.start-container').style.display = 'none';
     document.querySelector('.job-container').style.display = 'block';
     toggleNewsDisplay(false);
+    saveGameData();
 }
 
 function chooseJob(job) {
@@ -52,21 +78,25 @@ function chooseJob(job) {
     document.querySelector('.job-container').style.display = 'none';
     document.querySelector('.game-container').style.display = 'block';
     document.getElementById('job-title').innerText = `Zawód: ${currentJob.name}`;
-
-    const jobImagePath = `images/${currentJob.image}`;
-    document.getElementById('job-image').src = jobImagePath;
-    document.getElementById('job-image').alt = `Obraz zawodu: ${currentJob.name}`;
-
+    document.getElementById('job-image').src = `images/${currentJob.image}`;
     updateInvestmentList();
     updateEarningsDisplay();
     startPassiveIncome();
-    toggleNewsDisplay(false);
+    saveGameData();
+}
+
+function toggleNewsDisplay(show) {
+    const newsSection = document.getElementById('news-section');
+    if (newsSection) {
+        newsSection.style.display = show ? 'block' : 'none';
+    }
 }
 
 function earnMoney() {
     earnings += currentJob.baseIncome;
     updateEarningsDisplay();
     updateInvestmentButtons();
+    saveGameData();
 }
 
 function updateEarningsDisplay() {
@@ -98,6 +128,7 @@ function buyInvestment(index) {
         purchasedInvestments.push(index);
         updateEarningsDisplay();
         updateInvestmentButtons();
+        saveGameData();
     } else {
         alert("Nie masz wystarczających środków na tę inwestycję!");
     }
@@ -106,22 +137,16 @@ function buyInvestment(index) {
 function updateInvestmentButtons() {
     currentJob.investments.forEach((investment, index) => {
         const button = document.getElementById(`investment-${index}`);
-        if (purchasedInvestments.includes(index)) {
-            button.disabled = true;
-        } else if (earnings >= investment.cost) {
-            button.disabled = false;
-        } else {
-            button.disabled = true;
-        }
+        button.disabled = earnings < investment.cost || purchasedInvestments.includes(index);
     });
 }
 
 function startPassiveIncome() {
     if (passiveIncomeInterval) clearInterval(passiveIncomeInterval);
-
     passiveIncomeInterval = setInterval(() => {
         earnings += passiveIncome;
         updateEarningsDisplay();
+        saveGameData();
     }, 1000);
 }
 
@@ -129,6 +154,7 @@ function goToJobs() {
     document.querySelector('.game-container').style.display = 'none';
     document.querySelector('.job-container').style.display = 'block';
     toggleNewsDisplay(false);
+    saveGameData();
 }
 
 function goToMain() {
@@ -138,7 +164,10 @@ function goToMain() {
     toggleNewsDisplay(true);
 }
 
-function toggleNewsDisplay(show) {
-    const newsSection = document.getElementById('news-section');
-    newsSection.style.display = show ? 'block' : 'none';
-}
+document.addEventListener("DOMContentLoaded", () => {
+    if (loadGameData()) {
+        goToMain();
+    } else {
+        toggleNewsDisplay(true);
+    }
+});
