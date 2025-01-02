@@ -8,6 +8,13 @@ const jobs = {
             { name: "Dostwaczak MAX", cost: 150, income: 15 },
             { name: "Solówka", cost: 500, income: 50 },
             { name: "Ciągnik z naczepą", cost: 1500, income: 150 }
+            const fakePlayerNames = [
+    "Mateusz", "Anna", "Krzysztof", "Ewa", "Marcin", 
+    "Julia", "Tomasz", "Zofia", "Piotr", "Katarzyna"
+];
+
+const fakeJobs = Object.values(jobs).map(job => job.name);
+
         ]
     },
     rolnik: {
