@@ -5,7 +5,7 @@ const jobs = {
         baseIncome: 1,
         investments: [
             { name: "Dostawczak", cost: 50, income: 5 },
-            { name: "Dostawczak MAX", cost: 150, income: 15 },
+            { name: "Dostwaczak MAX", cost: 150, income: 15 },
             { name: "Solówka", cost: 500, income: 50 },
             { name: "Ciągnik z naczepą", cost: 1500, income: 150 }
         ]
@@ -33,13 +33,6 @@ const jobs = {
     }
 };
 
-const fakePlayerNames = [
-    "Mateusz", "Anna", "Krzysztof", "Ewa", "Marcin", 
-    "Julia", "Tomasz", "Zofia", "Piotr", "Katarzyna"
-];
-
-const fakeJobs = Object.values(jobs).map(job => job.name);
-
 let playerName = '';
 let currentJob = null;
 let earnings = 0;
@@ -47,66 +40,120 @@ let passiveIncome = 0;
 let passiveIncomeInterval = null;
 let purchasedInvestments = [];
 
-// Funkcja zapisywania gry
-function saveGameData() {
-    const gameData = {
-        playerName,
-        currentJob: currentJob ? currentJob.name : null,
-        earnings,
-        passiveIncome,
-        purchasedInvestments
-    };
-    document.cookie = `gameData=${JSON.stringify(gameData)}; path=/`;
+function startGame() {
+    playerName = document.getElementById('player-name').value || 'Gracz';
+    document.querySelector('.start-container').style.display = 'none';
+    document.querySelector('.job-container').style.display = 'block';
+    toggleNewsDisplay(false); // Ukryj newsy na innych stronach
 }
 
-// Funkcja ładowania gry
-function loadGameData() {
-    const cookies = document.cookie.split('; ').find(row => row.startsWith('gameData='));
-    if (cookies) {
-        const gameData = JSON.parse(cookies.split('=')[1]);
-        playerName = gameData.playerName || 'Gracz';
-        currentJob = jobs[gameData.currentJob] || null;
-        earnings = gameData.earnings || 0;
-        passiveIncome = gameData.passiveIncome || 0;
-        purchasedInvestments = gameData.purchasedInvestments || [];
-        return true;
+function chooseJob(job) {
+    currentJob = jobs[job];
+    document.querySelector('.job-container').style.display = 'none';
+    document.querySelector('.game-container').style.display = 'block';
+    document.getElementById('job-title').innerText = `Zawód: ${currentJob.name}`;
+
+    const jobImagePath = `images/${currentJob.image}`;
+    document.getElementById('job-image').src = jobImagePath;
+    document.getElementById('job-image').alt = `Obraz zawodu: ${currentJob.name}`;
+
+    updateInvestmentList();
+    updateEarningsDisplay();
+    startPassiveIncome();
+    toggleNewsDisplay(false); // Ukryj newsy na innych stronach
+}
+
+function toggleNewsDisplay(show) {
+    const newsSection = document.getElementById('news-section');
+    if (newsSection) {
+        newsSection.style.display = show ? 'block' : 'none';
     }
-    return false;
 }
 
-// Generowanie rankingu
-function generateFakeRanking() {
-    const rankingList = document.getElementById('ranking-list');
-    rankingList.innerHTML = ''; // Wyczyszczenie listy
+function earnMoney() {
+    earnings += currentJob.baseIncome;
+    updateEarningsDisplay();
+    updateInvestmentButtons();
+}
 
-    const fakeRanking = Array.from({ length: 5 }, () => {
-        const name = fakePlayerNames[Math.floor(Math.random() * fakePlayerNames.length)];
-        const job = fakeJobs[Math.floor(Math.random() * fakeJobs.length)];
-        const earnings = Math.floor(Math.random() * 2000 + 500); // Losowy dochód od 500 do 2500 NT
+function updateEarningsDisplay() {
+    document.getElementById('earnings').innerText = earnings;
+}
 
-        return { name, job, earnings };
+function updateInvestmentList() {
+    const investmentsList = document.getElementById('investments-list');
+    investmentsList.innerHTML = '';
+
+    currentJob.investments.forEach((investment, index) => {
+        const investmentItem = document.createElement('div');
+        investmentItem.className = 'investment-item';
+        investmentItem.innerHTML = `
+            <span>${investment.name} (Koszt: ${investment.cost} NT, Dochód: ${investment.income} NT/s)</span>
+            <button class="button" id="investment-${index}" onclick="buyInvestment(${index})" disabled>Kup</button>
+        `;
+        investmentsList.appendChild(investmentItem);
     });
 
-    fakeRanking.sort((a, b) => b.earnings - a.earnings); // Posortowanie po zarobkach
+    updateInvestmentButtons();
+}
 
-    fakeRanking.forEach(player => {
-        const listItem = document.createElement('li');
-        listItem.innerText = `${player.name} - ${player.job} = ${player.earnings} NT`;
-        rankingList.appendChild(listItem);
+function updateInvestmentButtons() {
+    currentJob.investments.forEach((investment, index) => {
+        const button = document.getElementById(`investment-${index}`);
+        if (purchasedInvestments.includes(index) || (index > 0 && !purchasedInvestments.includes(index - 1))) {
+            button.disabled = true;
+        } else if (earnings >= investment.cost) {
+            button.disabled = false;
+        } else {
+            button.disabled = true;
+        }
     });
 }
 
-// Funkcje gry (np. startGame, chooseJob, earnMoney, itp.)
-// [Dodaj pozostałe funkcje tutaj, poprawione z poprzedniej wersji]
-
-// Po załadowaniu strony
-document.addEventListener("DOMContentLoaded", () => {
-    if (loadGameData()) {
-        goToMain();
+function buyInvestment(index) {
+    const investment = currentJob.investments[index];
+    if (earnings >= investment.cost) {
+        earnings -= investment.cost;
+        passiveIncome += investment.income;
+        purchasedInvestments.push(index);
+        updateEarningsDisplay();
+        updateInvestmentButtons();
     } else {
-        toggleNewsDisplay(true);
+        alert("Nie masz wystarczających środków na tę inwestycję!");
     }
+}
 
-    generateFakeRanking(); // Pierwsze generowanie rankingu
-    setInterval(() => generateFakeRanking(), 120000); // Aktualizacja rankingu co 2 minuty
-});
+function startPassiveIncome() {
+    if (passiveIncomeInterval) clearInterval(passiveIncomeInterval);
+
+    passiveIncomeInterval = setInterval(() => {
+        earnings += passiveIncome;
+        updateEarningsDisplay();
+        updateInvestmentButtons();
+    }, 1000);
+}
+
+function setTheme(theme) {
+    document.body.className = '';
+    if (theme === 'dark') {
+        document.body.classList.add('theme-dark');
+    } else if (theme === 'colorful') {
+        document.body.classList.add('theme-colorful');
+    }
+}
+
+function goToJobs() {
+    document.querySelector('.game-container').style.display = 'none';
+    document.querySelector('.job-container').style.display = 'block';
+    toggleNewsDisplay(false); // Ukryj newsy w sekcji zawodów
+}
+
+function goToMain() {
+    document.querySelector('.game-container').style.display = 'none';
+    document.querySelector('.job-container').style.display = 'none';
+    document.querySelector('.start-container').style.display = 'block';
+    toggleNewsDisplay(true); // Pokaż newsy na stronie głównej
+}
+
+// Wywołaj toggleNewsDisplay(true) tylko na stronie głównej
+toggleNewsDisplay(true);
