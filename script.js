@@ -142,18 +142,5 @@ function setTheme(theme) {
     }
 }
 
-function goToJobs() {
-    document.querySelector('.game-container').style.display = 'none';
-    document.querySelector('.job-container').style.display = 'block';
-    toggleNewsDisplay(false); // Ukryj newsy w sekcji zawodów
-}
-
-function goToMain() {
-    document.querySelector('.game-container').style.display = 'none';
-    document.querySelector('.job-container').style.display = 'none';
-    document.querySelector('.start-container').style.display = 'block';
-    toggleNewsDisplay(true); // Pokaż newsy na stronie głównej
-}
-
-// Wywołaj toggleNewsDisplay(true) tylko na stronie głównej
+// Wywołaj funkcję toggleNewsDisplay(true) tylko na stronie głównej
 toggleNewsDisplay(true);
