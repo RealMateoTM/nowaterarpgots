@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <div class="ranking-container">
-    <h3>Ranking Graczy</h3>
-    <ul id="ranking-list">
-        <!-- Losowy ranking będzie generowany tutaj -->
-    </ul>
-</div>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Republika Nowatera - Kliker</title>
@@ -14,10 +8,22 @@
 </head>
 <body>
     <h1>Republika Nowatera - Kliker</h1>
+    
+    <!-- Ranking -->
+    <div class="ranking-container">
+        <h3>Ranking Graczy</h3>
+        <ul id="ranking-list">
+            <!-- Losowy ranking będzie generowany tutaj -->
+        </ul>
+    </div>
+
+    <!-- Ekran początkowy -->
     <div class="start-container">
         <h2>Podaj swoje imię:</h2>
         <input type="text" id="player-name" placeholder="Wpisz imię">
         <button class="button" onclick="startGame()">Rozpocznij grę</button>
+        
+        <!-- Aktualności -->
         <div id="news-section">
             <h3>Aktualności:</h3>
             <ul id="news-list">
@@ -28,6 +34,7 @@
         </div>
     </div>
 
+    <!-- Ekran wyboru zawodu -->
     <div class="job-container" style="display: none;">
         <h2>Wybierz swój zawód:</h2>
         <button class="button" onclick="chooseJob('kierowca')">Kierowca</button>
@@ -36,12 +43,14 @@
         <button class="button" onclick="goToMain()">Powrót do strony głównej</button>
     </div>
 
+    <!-- Ekran gry -->
     <div class="game-container" style="display: none;">
         <h2 id="job-title"></h2>
         <img id="job-image" src="" alt="Obraz zawodu" style="width: 200px; height: auto; margin-bottom: 20px;">
         <p>Twoje zarobki: <span id="earnings">0</span> NT</p>
         <button class="button" onclick="earnMoney()">Klikaj, aby zarabiać</button>
 
+        <!-- Inwestycje -->
         <h3>Twoje inwestycje:</h3>
         <div id="investments-list"></div>
 
@@ -49,6 +58,7 @@
         <button class="button" onclick="goToMain()">Powrót do strony głównej</button>
     </div>
 
+    <!-- Stopka -->
     <footer>
         &copy; Republika Nowatera by MateoTM
     </footer>
