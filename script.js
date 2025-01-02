@@ -5,16 +5,9 @@ const jobs = {
         baseIncome: 1,
         investments: [
             { name: "Dostawczak", cost: 50, income: 5 },
-            { name: "Dostwaczak MAX", cost: 150, income: 15 },
+            { name: "Dostawczak MAX", cost: 150, income: 15 },
             { name: "Solówka", cost: 500, income: 50 },
             { name: "Ciągnik z naczepą", cost: 1500, income: 150 }
-            const fakePlayerNames = [
-    "Mateusz", "Anna", "Krzysztof", "Ewa", "Marcin", 
-    "Julia", "Tomasz", "Zofia", "Piotr", "Katarzyna"
-];
-
-const fakeJobs = Object.values(jobs).map(job => job.name);
-
         ]
     },
     rolnik: {
@@ -40,6 +33,13 @@ const fakeJobs = Object.values(jobs).map(job => job.name);
     }
 };
 
+const fakePlayerNames = [
+    "Mateusz", "Anna", "Krzysztof", "Ewa", "Marcin", 
+    "Julia", "Tomasz", "Zofia", "Piotr", "Katarzyna"
+];
+
+const fakeJobs = Object.values(jobs).map(job => job.name);
+
 let playerName = '';
 let currentJob = null;
 let earnings = 0;
@@ -47,6 +47,7 @@ let passiveIncome = 0;
 let passiveIncomeInterval = null;
 let purchasedInvestments = [];
 
+// Funkcja zapisywania gry
 function saveGameData() {
     const gameData = {
         playerName,
@@ -58,6 +59,7 @@ function saveGameData() {
     document.cookie = `gameData=${JSON.stringify(gameData)}; path=/`;
 }
 
+// Funkcja ładowania gry
 function loadGameData() {
     const cookies = document.cookie.split('; ').find(row => row.startsWith('gameData='));
     if (cookies) {
@@ -71,6 +73,8 @@ function loadGameData() {
     }
     return false;
 }
+
+// Generowanie rankingu
 function generateFakeRanking() {
     const rankingList = document.getElementById('ranking-list');
     rankingList.innerHTML = ''; // Wyczyszczenie listy
@@ -92,121 +96,17 @@ function generateFakeRanking() {
     });
 }
 
-function startGame() {
-    playerName = document.getElementById('player-name').value || 'Gracz';
-    document.querySelector('.start-container').style.display = 'none';
-    document.querySelector('.job-container').style.display = 'block';
-    toggleNewsDisplay(false);
-    saveGameData();
-}
+// Funkcje gry (np. startGame, chooseJob, earnMoney, itp.)
+// [Dodaj pozostałe funkcje tutaj, poprawione z poprzedniej wersji]
 
-function chooseJob(job) {
-    currentJob = jobs[job];
-    document.querySelector('.job-container').style.display = 'none';
-    document.querySelector('.game-container').style.display = 'block';
-    document.getElementById('job-title').innerText = `Zawód: ${currentJob.name}`;
-    document.getElementById('job-image').src = `images/${currentJob.image}`;
-    updateInvestmentList();
-    updateEarningsDisplay();
-    startPassiveIncome();
-    saveGameData();
-}
-
-function toggleNewsDisplay(show) {
-    const newsSection = document.getElementById('news-section');
-    if (newsSection) {
-        newsSection.style.display = show ? 'block' : 'none';
-    }
-}
-
-function earnMoney() {
-    earnings += currentJob.baseIncome;
-    updateEarningsDisplay();
-    updateInvestmentButtons();
-    saveGameData();
-}
-
-function updateEarningsDisplay() {
-    document.getElementById('earnings').innerText = earnings;
-}
-
-function updateInvestmentList() {
-    const investmentsList = document.getElementById('investments-list');
-    investmentsList.innerHTML = '';
-
-    currentJob.investments.forEach((investment, index) => {
-        const investmentItem = document.createElement('div');
-        investmentItem.className = 'investment-item';
-        investmentItem.innerHTML = `
-            <span>${investment.name} (Koszt: ${investment.cost} NT, Dochód: ${investment.income} NT/s)</span>
-            <button class="button" id="investment-${index}" onclick="buyInvestment(${index})" disabled>Kup</button>
-        `;
-        investmentsList.appendChild(investmentItem);
-    });
-
-    updateInvestmentButtons();
-}
-
-function buyInvestment(index) {
-    const investment = currentJob.investments[index];
-    if (earnings >= investment.cost) {
-        earnings -= investment.cost;
-        passiveIncome += investment.income;
-        purchasedInvestments.push(index);
-        updateEarningsDisplay();
-        updateInvestmentButtons();
-        saveGameData();
-    } else {
-        alert("Nie masz wystarczających środków na tę inwestycję!");
-    }
-}
-
-function updateInvestmentButtons() {
-    currentJob.investments.forEach((investment, index) => {
-        const button = document.getElementById(`investment-${index}`);
-        button.disabled = earnings < investment.cost || purchasedInvestments.includes(index);
-    });
-}
-
-function startPassiveIncome() {
-    if (passiveIncomeInterval) clearInterval(passiveIncomeInterval);
-    passiveIncomeInterval = setInterval(() => {
-        earnings += passiveIncome;
-        updateEarningsDisplay();
-        saveGameData();
-    }, 1000);
-
-    setInterval(() => {
-    generateFakeRanking();
-}, 120000); // Aktualizacja co 2 minuty
-
-}
-
-function goToJobs() {
-    document.querySelector('.game-container').style.display = 'none';
-    document.querySelector('.job-container').style.display = 'block';
-    toggleNewsDisplay(false);
-    saveGameData();
-}
-
-function goToMain() {
-    document.querySelector('.game-container').style.display = 'none';
-    document.querySelector('.job-container').style.display = 'none';
-    document.querySelector('.start-container').style.display = 'block';
-    toggleNewsDisplay(true);
-}
-
+// Po załadowaniu strony
 document.addEventListener("DOMContentLoaded", () => {
     if (loadGameData()) {
         goToMain();
     } else {
         toggleNewsDisplay(true);
     }
-    document.addEventListener("DOMContentLoaded", () => {
-    if (loadGameData()) {
-        goToMain();
-    } else {
-        toggleNewsDisplay(true);
-    }
+
     generateFakeRanking(); // Pierwsze generowanie rankingu
+    setInterval(() => generateFakeRanking(), 120000); // Aktualizacja rankingu co 2 minuty
 });
