@@ -1,0 +1,25 @@
+## Prawa autorskie i Licencja
+
+Gra **Republika Nowatera** jest chroniona prawem autorskim. Wszelkie prawa do tej gry, w tym prawa do kodu, grafiki, dźwięków, tekstów, oraz innych zasobów związanych z projektem, są zastrzeżone. Gra jest udostępniana wyłącznie do osobistego użytku, a jej modyfikowanie, rozpowszechnianie, sprzedawanie, sublicencjonowanie lub używanie w celach komercyjnych jest zabronione bez wyraźnej zgody właściciela praw autorskich.
+
+### Zasady użytkowania:
+
+1. **Użytek osobisty**: Gra jest dostępna wyłącznie do użytku osobistego. Możesz grać w grę i korzystać z jej funkcji, ale nie możesz jej edytować, kopiować, modyfikować, rozprowadzać ani wykorzystywać w jakikolwiek sposób, który może naruszać prawa autorskie.
+
+2. **Zakaz modyfikacji**: Nie zezwalamy na jakiekolwiek zmiany w kodzie gry, grafikach, dźwiękach ani innych elementach projektu. Próby dekompilacji, reverse engineeringu czy jakiekolwiek inne formy modyfikacji są zabronione.
+
+3. **Zakaz rozpowszechniania**: Nie zezwalamy na rozpowszechnianie, udostępnianie lub sprzedaż gry w jakiejkolwiek formie bez uprzedniej zgody właściciela praw autorskich.
+
+4. **Licencja**: Gra jest udostępniana bez żadnej gwarancji. Nie ponosimy odpowiedzialności za jakiekolwiek szkody, straty lub problemy wynikłe z użytkowania gry. Gra jest udostępniana "tak jak jest".
+
+5. **Prawo autorskie**: Wszelkie materiały związane z grą, takie jak kod źródłowy, grafika, teksty, dźwięki oraz inne zasoby są objęte prawem autorskim, a właścicielem tych praw jest **MateoTM - Mateusz Hornich**.
+
+### Użycie w innych projektach:
+
+Gra **Republika Nowatera** nie może być używana ani włączana do innych projektów bez wyraźnej zgody autora. Każde naruszenie tych zasad będzie traktowane jako naruszenie praw autorskich i może skutkować podjęciem działań prawnych.
+
+### Współpraca i zgłoszenia:
+
+Chcesz podzielić się opinią lub zgłosić błąd? Chociaż nie przyjmujemy modyfikacji gry, możesz zgłaszać wszelkie uwagi, sugestie lub błędy za pośrednictwem zgłoszeń w tym repozytorium. Proszę pamiętać, że nie przyjmujemy kodu ani innych zasobów do gry.
+
+**Dziękujemy za przestrzeganie zasad i dbanie o prawa autorskie!**
