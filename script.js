@@ -66,45 +66,53 @@ function loadGameData() {
         purchasedInvestments = data.purchasedInvestments || [];
 
         if (currentJob) {
-            chooseJob(currentJob.name.toLowerCase());
-            updateInvestmentButtons();
+            chooseJob(currentJob.name.toLowerCase(), true);
         } else {
-            toggleNewsDisplay(true);
+            showSection('start-container');
         }
         updateEarningsDisplay();
     }
 }
 
+// Funkcje zarządzające widocznością
+function showSection(sectionClass) {
+    document.querySelectorAll('.start-container, .job-container, .game-container').forEach(section => {
+        section.style.display = 'none';
+    });
+    document.querySelector(`.${sectionClass}`).style.display = 'block';
+}
+
 // Funkcje gry
 function startGame() {
     playerName = document.getElementById('player-name').value || 'Gracz';
-    document.querySelector('.start-container').style.display = 'none';
-    document.querySelector('.job-container').style.display = 'block';
-    toggleNewsDisplay(false);
+    showSection('job-container');
     saveGameData();
 }
 
-function chooseJob(job) {
+function chooseJob(job, fromLoad = false) {
     currentJob = jobs[job];
-    document.querySelector('.job-container').style.display = 'none';
-    document.querySelector('.game-container').style.display = 'block';
-    document.getElementById('job-title').innerText = `Zawód: ${currentJob.name}`;
+    showSection('game-container');
 
+    document.getElementById('job-title').innerText = `Zawód: ${currentJob.name}`;
     const jobImagePath = `images/${currentJob.image}`;
     document.getElementById('job-image').src = jobImagePath;
     document.getElementById('job-image').alt = `Obraz zawodu: ${currentJob.name}`;
 
+    if (!fromLoad) {
+        earnings = 0;
+        passiveIncome = 0;
+        purchasedInvestments = [];
+    }
+
     updateInvestmentList();
     updateEarningsDisplay();
     startPassiveIncome();
-    toggleNewsDisplay(false);
     saveGameData();
 }
 
 function earnMoney() {
     earnings += currentJob.baseIncome;
     updateEarningsDisplay();
-    updateInvestmentButtons();
     saveGameData();
 }
 
@@ -115,11 +123,50 @@ function buyInvestment(index) {
         passiveIncome += investment.income;
         purchasedInvestments.push(index);
         updateEarningsDisplay();
-        updateInvestmentButtons();
         saveGameData();
     } else {
         alert("Nie masz wystarczających środków na tę inwestycję!");
     }
+}
+
+function updateEarningsDisplay() {
+    document.getElementById('earnings').innerText = earnings;
+}
+
+function updateInvestmentList() {
+    const investmentsList = document.getElementById('investments-list');
+    investmentsList.innerHTML = '';
+
+    currentJob.investments.forEach((investment, index) => {
+        const isPurchased = purchasedInvestments.includes(index);
+        const buttonDisabled = isPurchased || earnings < investment.cost;
+
+        const investmentItem = document.createElement('div');
+        investmentItem.className = 'investment-item';
+        investmentItem.innerHTML = `
+            <span>${investment.name} (Koszt: ${investment.cost} NT, Dochód: ${investment.income} NT/s)</span>
+            <button class="button" onclick="buyInvestment(${index})" ${buttonDisabled ? 'disabled' : ''}>Kup</button>
+        `;
+        investmentsList.appendChild(investmentItem);
+    });
+}
+
+function startPassiveIncome() {
+    clearInterval(passiveIncomeInterval);
+    passiveIncomeInterval = setInterval(() => {
+        earnings += passiveIncome;
+        updateEarningsDisplay();
+    }, 1000);
+}
+
+function goToJobs() {
+    showSection('job-container');
+    saveGameData();
+}
+
+function goToMain() {
+    showSection('start-container');
+    saveGameData();
 }
 
 // Inicjalizacja
