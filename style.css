@@ -1,22 +1,24 @@
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #1e1e1e, #4caf50);
-    color: #fff;
+    background: linear-gradient(135deg, #1d3557, #457b9d); /* Kolorystyka pasująca do ekranów */
+    color: #f1faee;
     margin: 0;
     padding: 0;
 }
 
 h1, h2, h3 {
     text-align: center;
+    color: #a8dadc;
 }
 
 .start-container, .job-container, .game-container {
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(29, 53, 87, 0.9); /* Przyciemnione tło */
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    color: #f1faee;
 }
 
 #news-section {
@@ -24,9 +26,9 @@ h1, h2, h3 {
     max-width: 400px;
     margin: 20px auto;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(29, 53, 87, 0.9); /* Przyciemnione tło */
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .button {
@@ -34,7 +36,7 @@ h1, h2, h3 {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
-    background: #007bff;
+    background: #e63946; /* Intensywny czerwony */
     color: white;
     border: none;
     border-radius: 5px;
@@ -43,13 +45,13 @@ h1, h2, h3 {
 }
 
 .button:hover {
-    background: #0056b3;
+    background: #d62828; /* Ciemniejszy czerwony */
 }
 
 #job-image {
     display: block;
     margin: 0 auto 20px;
-    border: 2px solid #ccc;
+    border: 2px solid #f1faee;
     border-radius: 10px;
     max-width: 100%;
 }
@@ -57,8 +59,8 @@ h1, h2, h3 {
 footer {
     text-align: center;
     padding: 10px;
-    background-color: #333;
-    color: #fff;
+    background-color: #1d3557; /* Kolor z gradientu */
+    color: #f1faee;
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -66,29 +68,4 @@ footer {
 
 .investment-item {
     margin-bottom: 10px;
-    .ranking-container {
-    position: fixed;
-    top: 100px;
-    right: 10px;
-    width: 200px;
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    padding: 10px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
-
-.ranking-container h3 {
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-#ranking-list {
-    list-style: none;
-    padding: 0;
-}
-
-#ranking-list li {
-    margin-bottom: 8px;
-    font-size: 14px;
-}
-
