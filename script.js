@@ -30,6 +30,46 @@ const jobs = {
             { name: "Galeria handlowa", cost: 300, income: 30 },
             { name: "Wieżowiec", cost: 1000, income: 100 }
         ]
+    },
+    zolnierz: {
+        name: "Żołnierz",
+        image: "zolnierz.png",
+        baseIncome: 1,
+        investments: [
+            { name: "Pojazd opancerzony", cost: 100, income: 20 },
+            { name: "Zaawansowany sprzęt wojskowy", cost: 300, income: 35 },
+            { name: "Baza wojskowa", cost: 1500, income: 200 }
+        ]
+    },
+    policjant: {
+        name: "Policjant",
+        image: "policjant.png",
+        baseIncome: 1,
+        investments: [
+            { name: "Radiowóz patrolowy", cost: 100, income: 10 },
+            { name: "Monitoring miejski", cost: 200, income: 25 },
+            { name: "Akademia policyjna", cost: 570, income: 100 }
+        ]
+    },
+    strazak: {
+        name: "Strażak",
+        image: "strazak.png",
+        baseIncome: 1,
+        investments: [
+            { name: "Nowoczesny wóz strażacki", cost: 50, income: 15 },
+            { name: "Zaawansowane systemy gaśnicze", cost: 150, income: 30 },
+            { name: "Centrum szkoleniowe dla strażaków", cost: 1000, income: 100 }
+        ]
+    },
+    lekarz: {
+        name: "Lekrz",
+        image: "lekarz.png",
+        baseIncome: 1,
+        investments: [
+            {name: "Przychodnia publiczna", cost: 50, income: 20},
+            {name: "Prywatny gabinet", cost: 150, income: 50},
+            {name: "Specjalizacja I",cost: 400, income: 230}
+        ]
     }
 };
 
@@ -40,12 +80,55 @@ let passiveIncome = 0;
 let passiveIncomeInterval = null;
 let purchasedInvestments = [];
 
+// Funkcja zapisu postępu
+function saveProgress() {
+    const progress = {
+        playerName: playerName,
+        currentJob: currentJob ? currentJob.name : null,
+        earnings: earnings,
+        passiveIncome: passiveIncome,
+        purchasedInvestments: purchasedInvestments
+    };
+    document.cookie = `gameProgress=${JSON.stringify(progress)}; path=/; max-age=31536000`;
+}
+
+// Funkcja wczytywania postępu
+function loadProgress() {
+    const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+    const progressCookie = cookies.find(cookie => cookie.startsWith('gameProgress='));
+    if (progressCookie) {
+        const progress = JSON.parse(progressCookie.split('=')[1]);
+        playerName = progress.playerName || 'Gracz';
+        currentJob = jobs[progress.currentJob] || null;
+        earnings = progress.earnings || 0;
+        passiveIncome = progress.passiveIncome || 0;
+        purchasedInvestments = progress.purchasedInvestments || [];
+        if (currentJob) {
+            chooseJob(currentJob.name.toLowerCase());
+            purchasedInvestments.forEach(index => {
+                const investment = currentJob.investments[index];
+                passiveIncome += investment.income;
+            });
+        }
+        updateEarningsDisplay();
+        updateInvestmentButtons();
+    }
+}
+
 function startGame() {
-    playerName = document.getElementById('player-name').value || 'Gracz';
+    const playerNameInput = document.getElementById('player-name').value.trim();
+
+    if (!playerNameInput) {
+        alert('Proszę podać nazwę gracza, aby kontynuować!');
+        return; // Zatrzymuje przejście do następnej strony
+    }
+
+    playerName = playerNameInput;
     document.querySelector('.start-container').style.display = 'none';
     document.querySelector('.job-container').style.display = 'block';
     toggleNewsDisplay(false); // Ukryj newsy na innych stronach
 }
+
 
 function chooseJob(job) {
     currentJob = jobs[job];
@@ -74,6 +157,7 @@ function earnMoney() {
     earnings += currentJob.baseIncome;
     updateEarningsDisplay();
     updateInvestmentButtons();
+    saveProgress(); // Zapisz postęp
 }
 
 function updateEarningsDisplay() {
@@ -118,6 +202,7 @@ function buyInvestment(index) {
         purchasedInvestments.push(index);
         updateEarningsDisplay();
         updateInvestmentButtons();
+        saveProgress(); // Zapisz postęp
     } else {
         alert("Nie masz wystarczających środków na tę inwestycję!");
     }
@@ -131,6 +216,7 @@ function startPassiveIncome() {
         updateEarningsDisplay();
         updateInvestmentButtons();
     }, 1000);
+    updateInvestmentButtons();
 }
 
 function setTheme(theme) {
@@ -155,5 +241,8 @@ function goToMain() {
     toggleNewsDisplay(true); // Pokaż newsy na stronie głównej
 }
 
-// Wywołaj toggleNewsDisplay(true) tylko na stronie głównej
-toggleNewsDisplay(true);
+// Wywołanie loadProgress po załadowaniu strony
+window.onload = () => {
+    loadProgress();
+    toggleNewsDisplay(true); // Pokaż newsy na stronie głównej po załadowaniu
+};
