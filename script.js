@@ -62,7 +62,7 @@ const jobs = {
         ]
     },
     lekarz: {
-        name: "Lekrz",
+        name: "Lekarz",
         image: "lekarz.png",
         baseIncome: 1,
         investments: [
@@ -113,6 +113,9 @@ function loadProgress() {
         updateEarningsDisplay();
         updateInvestmentButtons();
     }
+    // Pokazuj newsy na stronie głównej po załadowaniu
+    const isMainPage = !currentJob;
+    toggleNewsDisplay(isMainPage);
 }
 
 function startGame() {
@@ -150,8 +153,10 @@ function toggleNewsDisplay(show) {
     const newsSection = document.getElementById('news-section');
     if (newsSection) {
         newsSection.style.display = show ? 'block' : 'none';
+        console.log(`News section is now ${show ? 'visible' : 'hidden'}`);
     }
 }
+
 
 function earnMoney() {
     earnings += currentJob.baseIncome;
@@ -244,5 +249,6 @@ function goToMain() {
 // Wywołanie loadProgress po załadowaniu strony
 window.onload = () => {
     loadProgress();
-    toggleNewsDisplay(true); // Pokaż newsy na stronie głównej po załadowaniu
+    const isMainPage = !currentJob; // Jeśli brak aktualnego zawodu, to jesteśmy na stronie głównej
+    toggleNewsDisplay(isMainPage);
 };
