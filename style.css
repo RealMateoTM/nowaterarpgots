@@ -22,19 +22,14 @@ h1, h2, h3 {
 }
 
 #news-section {
-    display: block; /* Zmienione na block, aby sekcja była widoczna */
-    position: fixed;
-    top: 20px; /* Odstęp od góry ekranu */
-    right: 20px; /* Odstęp od prawej krawędzi ekranu */
-    width: 300px; /* Szerokość sekcji newsów */
-    max-height: 80vh; /* Wysokość sekcji ograniczona do 80% wysokości ekranu */
-    overflow-y: auto; /* Dodanie przewijania pionowego, jeśli treść będzie zbyt długa */
-    background: rgba(29, 53, 87, 0.9); /* Tło z półprzezroczystością */
-    color: #f1faee;
+    display: none; /* Domyślnie ukryte */
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(29, 53, 87, 0.9); /* Przyciemnione tło */
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    z-index: 1000; /* Zwiększ z-index, aby sekcja była widoczna na wierzchu */
+}
 
 .button {
     display: block;
