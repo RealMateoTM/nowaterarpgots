@@ -122,7 +122,7 @@ function loadProgress() {
     toggleNewsDisplay(true); 
     }
     const isMainPage = !currentJob;
-    toggleNewsDisplay(isMainPage);
+    toggleNewsDisplay(true);
 }
 
 function chooseJob(job) {
