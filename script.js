@@ -118,6 +118,8 @@ function loadProgress() {
         }
         updateEarningsDisplay();
         updateInvestmentButtons();
+        // Zawsze pokazuj newsy po załadowaniu postępu
+    toggleNewsDisplay(true); 
     }
     const isMainPage = !currentJob;
     toggleNewsDisplay(isMainPage);
