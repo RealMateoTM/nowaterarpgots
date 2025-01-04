@@ -22,7 +22,7 @@ h1, h2, h3 {
 }
 
 #news-section {
-    display: block; /* Domyślnie ukryte */
+    display: none; /* Domyślnie ukryte */
     max-width: 400px;
     margin: 20px auto;
     padding: 20px;
