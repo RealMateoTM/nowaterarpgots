@@ -22,7 +22,7 @@ h1, h2, h3 {
 }
 
 #news-section {
-    display: none; /* Domyślnie ukryte */
+    display: block; /* Element będzie wyświetlany jako blok */
     max-width: 400px;
     margin: 20px auto;
     padding: 20px;
