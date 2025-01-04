@@ -153,5 +153,5 @@ function chooseJob(job) {
     updateInvestmentList();
     updateEarningsDisplay();
     startPassiveIncome();
-    toggleNewsDisplay(false);
+    toggleNewsDisplay(true);
 }
